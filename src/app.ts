@@ -1,15 +1,17 @@
 import express from "express";
 
+import loadData from "./libs/LoadData.js";
+
 const app = express();
 
-interface ExampleRes {
-    id: number;
-    message: string;
-}
+app.get("/books", (_, res) => {
+    const data = loadData();
+    res.json(data);
+});
 
-app.get("/", (_, res) => {
-    const myRes: ExampleRes = {id: 25, message: "Hello Friend"};
-    res.json(myRes);
+app.get("/books/:index", (req, res) => {
+    const data = loadData();
+    res.json(data[parseInt(req.params.index)]);
 });
 
 export default app;
