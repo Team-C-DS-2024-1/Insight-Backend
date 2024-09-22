@@ -1,5 +1,6 @@
-import express from "express";
+import fs from 'fs'
 import cors from 'cors';
+import express from "express";
 
 import loadData from "./libs/LoadData.js";
 import Book from "./interfaces/Book.js";
@@ -78,6 +79,25 @@ app.get("/books/title/:title", (req,res) => {
         res.status(404);
         res.json({message: "Not found"});
     }
+});
+
+app.get("/books/pending", (_, res) => {
+    const data = fs.readFileSync("./data/pending.json", "utf-8");
+    const obj: Book[] = JSON.parse(data);
+
+    res.json(obj);
+});
+
+app.put("/books/pending", (req,res) => {
+    const { books } = req.body;
+    try{
+        fs.writeFileSync("./data/pending.json", JSON.stringify(books));
+        res.status(201).json({"messagee":"ok"});
+    } catch(e) {
+        console.log(e);
+        res.status(500);
+    }
+
 });
 
 /*

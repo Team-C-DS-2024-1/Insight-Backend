@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon ./dist/index.js"
+    "dev": "nodemon --ignore ./data/*.json ./dist/index.js"
   },
   "keywords": [],
   "author": "",
