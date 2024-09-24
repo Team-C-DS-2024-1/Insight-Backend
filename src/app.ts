@@ -5,6 +5,7 @@ import express from "express";
 import loadData from "./libs/LoadData.js";
 import Book from "./interfaces/Book.js";
 import AVLTree from "./DataStructures/AVLTree.js";
+import HashTable from "./DataStructures/HashTable.js";
 import { FRONTEND_URL } from "./config.js";
 
 const app = express();
@@ -30,6 +31,10 @@ const TitleIndex = new AVLTree<Book>((a,b) => {
 
 IsbnIndex.load(BooksData);
 TitleIndex.load(BooksData);
+
+const categoryIndex = new HashTable<string, Book[]>();
+BooksData.forEach(b => categoryIndex.put(b.category, []));
+BooksData.forEach(b => categoryIndex.get(b.category).push(b));
 
 app.use(cors({
     credentials: true,
@@ -100,10 +105,15 @@ app.put("/books/pending", (req,res) => {
 
 });
 
-/*
-app.get("/books/category/:category", (req,res) => {
 
+app.get("/books/category/:category", (req,res) => {
+    const books = categoryIndex.get(req.params.category);
+    if(books !== null){
+        res.json(books);
+    } else {
+        res.status(404);
+    }
 });
-*/
+
 
 export default app;
